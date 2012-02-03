@@ -1,0 +1,5 @@
+D:\Developer Resources\Visual Studio 2010\Projects\jQueryNotification\jQueryNotification\obj\Debug\ResolveAssemblyReference.cache
+D:\Developer Resources\Visual Studio 2010\Projects\jQueryNotification\jQueryNotification\bin\jQueryNotification.dll
+D:\Developer Resources\Visual Studio 2010\Projects\jQueryNotification\jQueryNotification\bin\jQueryNotification.pdb
+D:\Developer Resources\Visual Studio 2010\Projects\jQueryNotification\jQueryNotification\obj\Debug\jQueryNotification.dll
+D:\Developer Resources\Visual Studio 2010\Projects\jQueryNotification\jQueryNotification\obj\Debug\jQueryNotification.pdb
