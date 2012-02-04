@@ -23,14 +23,13 @@ namespace JqueryNotification
             // Allow adding multiple notifications by making the key unique
             var scriptKey = Guid.NewGuid().ToString();
 
+            // Adding the call to the pre-render event of the page, so that multiple notification calls
+            //      are added in the same order they are rendered in the page, not the order the calls are processed in page life cycle
             control.PreRender += new EventHandler
                 ((sender, e) =>
                  // Note that we need to use ScriptManager to be UpdatePanel friendly
                  // This will still work even if there is no ScriptManager on the page
-                 // Also, changed from RegisterStartup so that the scripts are placed in the page
-                 //       in the order the controls that call them are rendered, not in the order they run in page lifecycle
-                 //       which is the same reason we are adding the call to pre-render event
-                 ScriptManager.RegisterClientScriptBlock(control, control.GetType(), scriptKey,
+                 ScriptManager.RegisterStartupScript(control, control.GetType(), scriptKey,
                                                          notificationScript,
                                                          // saves us from adding <script> in string and making it harder to re
                                                          addScriptTags: true));
