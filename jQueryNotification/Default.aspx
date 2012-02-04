@@ -12,15 +12,18 @@
 
 <body>
     <form id="form" runat="server">
+        <asp:ScriptManager runat="server" EnablePartialRendering="True"></asp:ScriptManager>
     <div>
-    
+    <asp:UpdatePanel runat="server" UpdateMode="Conditional">
+        <ContentTemplate>
         <asp:Button ID="btnSuccess" runat="server" Text="Successful Notification" 
             onclick="btnSuccess_Click" />
         <asp:Button ID="btnWraning" runat="server" Text="Warning Notification" 
             onclick="btnWraning_Click" />
         <asp:Button ID="btnError" runat="server" Text="Error Notification" 
             onclick="btnError_Click" />
-    
+        </ContentTemplate>
+    </asp:UpdatePanel>
     </div>
     <div>
         
