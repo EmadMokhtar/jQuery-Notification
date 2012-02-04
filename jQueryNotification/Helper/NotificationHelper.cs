@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace JqueryNotification
 {
@@ -22,14 +23,17 @@ namespace JqueryNotification
             // Allow adding multiple notifications by making the key unique
             var scriptKey = Guid.NewGuid().ToString();
 
-            // Note that we need to use ScriptManager to be UpdatePanel friendly
-            // This will still work even if there is no ScriptManager on the page
-            // Also, changed from RegisterStartup so that the scripts are placed in the page
-            //       in the order the controls that call them are rendered, not in the order they run in page lifecycle
-            ScriptManager.RegisterClientScriptBlock(control, control.GetType(), scriptKey,
-                                                    notificationScript,
-                                                    // saves us from adding <script> in string and making it harder to read
-                                                    addScriptTags: true);
+            control.PreRender += new EventHandler
+                ((sender, e) =>
+                 // Note that we need to use ScriptManager to be UpdatePanel friendly
+                 // This will still work even if there is no ScriptManager on the page
+                 // Also, changed from RegisterStartup so that the scripts are placed in the page
+                 //       in the order the controls that call them are rendered, not in the order they run in page lifecycle
+                 //       which is the same reason we are adding the call to pre-render event
+                 ScriptManager.RegisterClientScriptBlock(control, control.GetType(), scriptKey,
+                                                         notificationScript,
+                                                         // saves us from adding <script> in string and making it harder to re
+                                                         addScriptTags: true));
         }
 
         public static void ShowNotification(this Control currentControl, NotificationType notificationType, string message)
