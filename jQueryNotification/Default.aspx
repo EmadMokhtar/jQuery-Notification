@@ -1,5 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="jQueryNotification.Default" %>
 
+<%@ Register src="SampleUserControl.ascx" tagPrefix="controls" tagName="SampleUserControl" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -12,15 +14,18 @@
 
 <body>
     <form id="form" runat="server">
+        <asp:ScriptManager runat="server" EnablePartialRendering="True"></asp:ScriptManager>
     <div>
-    
+    <asp:UpdatePanel runat="server" UpdateMode="Conditional">
+        <ContentTemplate>
         <asp:Button ID="btnSuccess" runat="server" Text="Successful Notification" 
             onclick="btnSuccess_Click" />
         <asp:Button ID="btnWraning" runat="server" Text="Warning Notification" 
             onclick="btnWraning_Click" />
         <asp:Button ID="btnError" runat="server" Text="Error Notification" 
             onclick="btnError_Click" />
-    
+        </ContentTemplate>
+    </asp:UpdatePanel>
     </div>
     <div>
         
@@ -32,6 +37,9 @@
             Text="Delayed Error Notification" onclick="btnDelayedError_Click" />
 
     </div>
+    
+    <controls:SampleUserControl runat="server" ID="sampleUserControl" />
+
     </form>
 </body>
 </html>

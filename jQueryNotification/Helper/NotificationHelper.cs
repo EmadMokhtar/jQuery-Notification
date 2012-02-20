@@ -1,83 +1,73 @@
-﻿using System.Web.UI;
+﻿using System;
+using System.Globalization;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
-namespace jQueryNotification.Helper
+namespace JqueryNotification
 {
-    public static class NotificationHelper
+    public static class NotificationExtensions
     {
-        /// <summary>
-        /// Shows the successful notification.
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="message">The message.</param>
-        public static void ShowSuccessfulNotification(this Page page, string message)
+        public static void ShowNotification(this Control control, NotificationType notificationType, string message, TimeSpan timeBeforeHiding)
         {
-            page.ClientScript.RegisterStartupScript(page.GetType(), "notificationScript",
-                                                    "<script type='text/javascript'>  $(document).ready(function () { $.jnotify('" +
-                                                    message + "'); });</script>");
+            var totalNotificationShowingMilliseconds = timeBeforeHiding.TotalMilliseconds;
+            var jNotifyDelay = totalNotificationShowingMilliseconds > 0
+                                        ? totalNotificationShowingMilliseconds.ToString(CultureInfo.InvariantCulture)
+                                        : "undefined"; // equal to not adding anything
+
+            var notificationScript =
+                string.Format(
+                    "$( function () {{ if(typeof $.jnotify === 'function') {{ $.jnotify('{0}', '{1}', {2}); }} }} );",
+                    HttpUtility.JavaScriptStringEncode(message), notificationType.ScriptKey, jNotifyDelay);
+
+            // Allow adding multiple notifications by making the key unique
+            var scriptKey = Guid.NewGuid().ToString();
+
+            // Adding the call to the pre-render event of the page, so that multiple notification calls
+            //      are added in the same order they are rendered in the page, not the order the calls are processed in page life cycle
+            control.PreRender += new EventHandler
+                ((sender, e) =>
+                 // Note that we need to use ScriptManager to be UpdatePanel friendly
+                 // This will still work even if there is no ScriptManager on the page
+                 ScriptManager.RegisterStartupScript(control, control.GetType(), scriptKey,
+                                                         notificationScript,
+                                                         // saves us from adding <script> in string and making it harder to re
+                                                         addScriptTags: true));
         }
 
-
-        /// <summary>
-        /// Shows the warning notification.
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="message">The message.</param>
-        public static void ShowWarningNotification(this Page page, string message)
+        public static void ShowNotification(this Control currentControl, NotificationType notificationType, string message)
         {
-            page.ClientScript.RegisterStartupScript(page.GetType(), "notificationScript",
-                                                    "<script type='text/javascript'> $(document).ready(function () { $.jnotify('" +
-                                                    message + "', 'warning'); });</script>");
+            ShowNotification(currentControl, notificationType, message, TimeSpan.FromMilliseconds(0));
         }
 
-        /// <summary>
-        /// Shows the error notification.
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="message">The message.</param>
-        public static void ShowErrorNotification(this Page page, string message)
+        public static void ShowSuccessfulNotification(this Control currentControl, string notificationMessage)
         {
-            page.ClientScript.RegisterStartupScript(page.GetType(), "notificationScript",
-                                                    "<script type='text/javascript'> $(document).ready(function () { $.jnotify('" +
-                                                    message + "', 'error'); });</script>");
+            ShowNotification(currentControl, NotificationType.Success, notificationMessage);
         }
 
-        /// <summary>
-        /// Shows the successful notification.
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="message">The message.</param>
-        /// <param name="delayTimeSpan">The delay time span in millisecond.</param>
-        public static void ShowSuccessfulNotification(this Page page, string message, int delayTimeSpan)
+        public static void ShowWarningNotification(this Control currentControl, string notificationMessage)
         {
-            page.ClientScript.RegisterStartupScript(page.GetType(), "notificationScript",
-                                                    "<script type='text/javascript'>  $(document).ready(function () { $.jnotify('" +
-                                                    message + "', " + delayTimeSpan + " ); });</script>");
+            ShowNotification(currentControl, NotificationType.Warning, notificationMessage);
         }
 
-        /// <summary>
-        /// Shows the warning notification.
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="message">The message.</param>
-        /// <param name="delayTimeSpan">The delay time span in millisecond.</param>
-        public static void ShowWarningNotification(this Page page, string message, int delayTimeSpan)
+        public static void ShowErrorNotification(this Control currentControl, string notificationMessage)
         {
-            page.ClientScript.RegisterStartupScript(page.GetType(), "notificationScript",
-                                                    "<script type='text/javascript'> $(document).ready(function () { $.jnotify('" +
-                                                    message + "', 'warning', " + delayTimeSpan + " ); });</script>");
+            ShowNotification(currentControl, NotificationType.Error, notificationMessage);
         }
 
-        /// <summary>
-        /// Shows the error notification.
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="message">The message.</param>
-        /// <param name="delayTimeSpan">The delay time span in millisecond.</param>
-        public static void ShowErrorNotification(this Page page, string message, int delayTimeSpan)
+        public static void ShowSuccessfulNotification(this Control currentControl, string notificationMessage, int milliseondsBeforeHiding)
         {
-            page.ClientScript.RegisterStartupScript(page.GetType(), "notificationScript",
-                                                    "<script type='text/javascript'> $(document).ready(function () { $.jnotify('" +
-                                                    message + "', 'error', " + delayTimeSpan + " ); });</script>");
+            ShowNotification(currentControl, NotificationType.Success, notificationMessage, TimeSpan.FromMilliseconds(milliseondsBeforeHiding));
+        }
+
+        public static void ShowWarningNotification(this Control currentControl, string notificationMessage, int milliseondsBeforeHiding)
+        {
+            ShowNotification(currentControl, NotificationType.Warning, notificationMessage, TimeSpan.FromMilliseconds(milliseondsBeforeHiding));
+        }
+
+        public static void ShowErrorNotification(this Control currentControl, string notificationMessage, int milliseondsBeforeHiding)
+        {
+            ShowNotification(currentControl, NotificationType.Error, notificationMessage, TimeSpan.FromMilliseconds(milliseondsBeforeHiding));
         }
     }
 }

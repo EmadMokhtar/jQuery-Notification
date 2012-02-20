@@ -1,5 +1,5 @@
 ﻿using System;
-using jQueryNotification.Helper;
+using JqueryNotification;
 
 namespace jQueryNotification
 {
@@ -12,10 +12,10 @@ namespace jQueryNotification
 
         protected void btnSuccess_Click(object sender, EventArgs e)
         {
-            this.ShowSuccessfulNotification("Success Notification");
+            this.ShowSuccessfulNotification("Success Notification');  alert('me & you');");
         }
 
-protected void btnWraning_Click(object sender, EventArgs e)
+        protected void btnWraning_Click(object sender, EventArgs e)
         {
             this.ShowWarningNotification("Warning Notification");
         }
@@ -27,12 +27,12 @@ protected void btnWraning_Click(object sender, EventArgs e)
 
         protected void btnDelayedSuccess_Click(object sender, EventArgs e)
         {
-            this.ShowSuccessfulNotification("Success Notification",5000);
+            this.ShowSuccessfulNotification("Success Notification", 5000);
         }
 
         protected void btnDelayedWarning_Click(object sender, EventArgs e)
         {
-            this.ShowWarningNotification("Warning Notification",5000);
+            this.ShowWarningNotification("Warning Notification", 5000);
         }
 
         protected void btnDelayedError_Click(object sender, EventArgs e)
